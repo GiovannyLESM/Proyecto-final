@@ -7,7 +7,7 @@ from src.seleccionestudiante.modelo.declarative_base import Session, engine, Bas
 from datetime import datetime
 
 def añadeRegistos():
-   #Crea la BDsad
+   #Crea la BD
    Base.metadata.create_all(engine)
 
    #Abre la sesion
