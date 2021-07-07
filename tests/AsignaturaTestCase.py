@@ -34,8 +34,10 @@ class AsignaturaTestCase ( unittest.TestCase ) :
         # crear asignatura
         self.asignatura1 = Asignatura ( nombreAsignatura = "Análisis y diseño de sistemas" )
         self.asignatura2 = Asignatura ( nombreAsignatura = "Pruebas de software" )
+        self.asignatura3 = Asignatura ( nombreAsignatura = "Base de datos" )
         self.session.add ( self.asignatura1 )
         self.session.add ( self.asignatura2 )
+        self.session.add ( self.asignatura3 )
         self.session.commit ( )
 
         # crear equipo de trabajo
@@ -106,3 +108,42 @@ class AsignaturaTestCase ( unittest.TestCase ) :
     def test_agregar_asignatura_repetido(self):
         resultado = self.sorteo.agregar_asignatura(nombreAsignatura = "Pruebas de software")
         self.assertNotEqual(resultado, True)
+
+    def test_verificar_almacenamiento_agregar_asignatura( self ):
+        self.sorteo.agregar_asignatura ( nombreAsignatura = "Estructura de datos" )
+
+        self.session=Session()
+        asignatura=self.session.query(Asignatura).filter(Asignatura.nombreAsignatura == "Estructura de datos").first()
+
+        self.assertEqual("Estructura de datos",asignatura.nombreAsignatura)
+
+    def test_agregar_asignatura_vacio(self):
+        resultado = self.sorteo.agregar_asignatura ( "" )
+        self.assertFalse(resultado)
+
+    def test_editar_asignatura ( self ) :
+        self.sorteo.editar_asignatura ( 2 , "Sistemas operativos" )
+        consulta = self.session.query ( Asignatura ).filter ( Asignatura.idAsignatura == 2 ).first ( )
+        self.assertIsNot ( consulta.nombreAsignatura , "Pruebas de software" )
+
+    def test_eliminar_asignatura ( self ) :
+        self.sorteo.eliminar_asignatura ( 1 )
+        consulta = self.session.query ( Asignatura ).filter ( Asignatura.idAsignatura == 1 ).first ( )
+        self.assertIsNone ( consulta )
+
+    #Todo Falta refinar la prueba
+    def test_dar_asignatura(self):
+        asignaturas=self.sorteo.dar_asignatura()
+        self.assertTrue(True)
+
+    def test_dar_asignatura_por_id(self):
+        self.sorteo.agregar_asignatura("Inteligencia de negocios")
+        idAsignatura = self.session.query(Asignatura).filter(Asignatura.nombreAsignatura == "Inteligencia de negocios").first().idAsignatura
+        consulta = self.sorteo.dar_asignatura_por_idAsignatura(idAsignatura)["nombreAsignatura"]
+        self.assertEqual(consulta, "Inteligencia de negocios")
+
+    def test_buscar_asignatura_por_nombreAsignatura(self):
+        consulta1 = self.sorteo.buscar_asignatura_por_nombreAsignatura("Base de datos")
+        self.sorteo.agregar_asignatura("Inteligencia artificial")
+        consulta2 = self.sorteo.buscar_asignatura_por_nombreAsignatura("Base de datos")
+        self.assertLessEqual(len(consulta1), len(consulta2))
