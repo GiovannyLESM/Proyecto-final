@@ -11,8 +11,7 @@ class AsignaturaTestCase ( unittest.TestCase ) :
     def setUp ( self ) :
         # Crea una sorteo para hacer las pruebas
         self.sorteo = Sorteo ( )
-
-        # Abre la sesión
+        #fsdfg Abre la sesiónfdg
         self.session = Session ( )
 
         # crear estudiantes
